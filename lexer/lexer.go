@@ -1,17 +1,20 @@
 package lexer
 
-import "github.com/cagriyildirimr/ape/token"
+import (
+	"github.com/cagriyildirimr/ape/token"
+	"io"
+	"strings"
+	"unicode"
+)
 
 type Lexer struct {
-	input        string
-	position     int
-	readPosition int
-	ch           byte
+	input *strings.Reader
+	ch    rune
 }
 
 func New(input string) *Lexer {
-	lexer := &Lexer{input: input}
-	lexer.readChar()
+	lexer := &Lexer{input: strings.NewReader(input)}
+	lexer.readRune()
 	return lexer
 }
 
@@ -53,53 +56,54 @@ func (l *Lexer) NextToken() token.Token {
 			tok = newToken(token.ILLEGAL, l.ch)
 		}
 	}
-	l.readChar()
+	l.readRune()
 	return tok
 }
 
-func (l *Lexer) readChar() {
-	if l.readPosition >= len(l.input) {
+func (l *Lexer) readRune() {
+	r, _, err := l.input.ReadRune()
+	if err == io.EOF {
 		l.ch = 0
 	} else {
-		l.ch = l.input[l.readPosition]
+		l.ch = r
 	}
-	l.position = l.readPosition
-	l.readPosition += 1
 }
 
-func newToken(ty token.Type, lit byte) token.Token {
+func newToken(ty token.Type, lit rune) token.Token {
 	return token.Token{
 		Type:    ty,
 		Literal: string(lit),
 	}
 }
 
-func isLetter(ch byte) bool {
-	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_' || ch == '-'
+func isLetter(ch rune) bool {
+	return unicode.IsLetter(ch) || ch == '_' || ch == '-' || unicode.IsSymbol(ch)
 }
 
 func (l *Lexer) readIdentifier() string {
-	start := l.position
+	var builder strings.Builder
 	for isLetter(l.ch) {
-		l.readChar()
+		builder.WriteRune(l.ch)
+		l.readRune()
 	}
-	return l.input[start:l.position]
+	return builder.String()
 }
 
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
-		l.readChar()
+		l.readRune()
 	}
 }
 
 func (l *Lexer) readNumber() string {
-	position := l.position
+	var builder strings.Builder
 	for isDigit(l.ch) {
-		l.readChar()
+		builder.WriteRune(l.ch)
+		l.readRune()
 	}
-	return l.input[position:l.position]
+	return builder.String()
 }
 
-func isDigit(ch byte) bool {
+func isDigit(ch rune) bool {
 	return '0' <= ch && ch <= '9'
 }

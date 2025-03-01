@@ -79,6 +79,28 @@ func TestNextToken(t *testing.T) {
 				{token.EOF, ""},
 			},
 		},
+		{
+			input: "let 🦊 = 10;",
+			want: []token.Token{
+				{token.LET, "let"},
+				{token.IDENT, "🦊"},
+				{token.ASSIGN, "="},
+				{token.INT, "10"},
+				{token.SEMICOLON, ";"},
+				{token.EOF, ""},
+			},
+		},
+		{
+			input: "let 变量 = 42;",
+			want: []token.Token{
+				{token.LET, "let"},
+				{token.IDENT, "变量"},
+				{token.ASSIGN, "="},
+				{token.INT, "42"},
+				{token.SEMICOLON, ";"},
+				{token.EOF, ""},
+			},
+		},
 	}
 
 	for i, test := range tests {
