@@ -25,21 +25,49 @@ func (l *Lexer) NextToken() token.Token {
 
 	switch l.ch {
 	case '=':
-		tok = newToken(token.ASSIGN, l.ch)
-	case ';':
-		tok = newToken(token.SEMICOLON, l.ch)
-	case '(':
-		tok = newToken(token.LPAREN, l.ch)
-	case ')':
-		tok = newToken(token.RPAREN, l.ch)
-	case ',':
-		tok = newToken(token.COMMA, l.ch)
+		if l.Peek() == '=' {
+			var builder strings.Builder
+			builder.WriteRune(l.ch)
+			l.readRune()
+			builder.WriteRune(l.ch)
+			tok = newToken(token.EQ, builder.String())
+		} else {
+			tok = newToken(token.ASSIGN, string(l.ch))
+		}
+	case '!':
+		if l.Peek() == '=' {
+			var builder strings.Builder
+			builder.WriteRune(l.ch)
+			l.readRune()
+			builder.WriteRune(l.ch)
+			tok = newToken(token.NOT_EQ, builder.String())
+		} else {
+			tok = newToken(token.BANG, string(l.ch))
+		}
 	case '+':
-		tok = newToken(token.PLUS, l.ch)
+		tok = newToken(token.PLUS, string(l.ch))
+	case '-':
+		tok = newToken(token.MINUS, string(l.ch))
+	case '*':
+		tok = newToken(token.ASTERISK, string(l.ch))
+	case '/':
+		tok = newToken(token.SLASH, string(l.ch))
+	case ',':
+		tok = newToken(token.COMMA, string(l.ch))
+	case ';':
+		tok = newToken(token.SEMICOLON, string(l.ch))
+	case '<':
+		tok = newToken(token.LT, string(l.ch))
+	case '>':
+		tok = newToken(token.GT, string(l.ch))
+	case '(':
+		tok = newToken(token.LPAREN, string(l.ch))
+	case ')':
+		tok = newToken(token.RPAREN, string(l.ch))
 	case '{':
-		tok = newToken(token.LBRACE, l.ch)
+		tok = newToken(token.LBRACE, string(l.ch))
 	case '}':
-		tok = newToken(token.RBRACE, l.ch)
+		tok = newToken(token.RBRACE, string(l.ch))
 	case 0:
 		tok.Type = token.EOF
 		tok.Literal = ""
@@ -53,7 +81,7 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Type = token.LookupIdentifier(tok.Literal)
 			return tok
 		} else {
-			tok = newToken(token.ILLEGAL, l.ch)
+			tok = newToken(token.ILLEGAL, string(l.ch))
 		}
 	}
 	l.readRune()
@@ -69,15 +97,15 @@ func (l *Lexer) readRune() {
 	}
 }
 
-func newToken(ty token.Type, lit rune) token.Token {
+func newToken(ty token.Type, lit string) token.Token {
 	return token.Token{
 		Type:    ty,
-		Literal: string(lit),
+		Literal: lit,
 	}
 }
 
 func isLetter(ch rune) bool {
-	return unicode.IsLetter(ch) || ch == '_' || ch == '-' || unicode.IsSymbol(ch)
+	return unicode.IsLetter(ch) || ch == '_' || unicode.IsSymbol(ch)
 }
 
 func (l *Lexer) readIdentifier() string {
@@ -106,4 +134,10 @@ func (l *Lexer) readNumber() string {
 
 func isDigit(ch rune) bool {
 	return '0' <= ch && ch <= '9'
+}
+
+func (l *Lexer) Peek() rune {
+	r, _, _ := l.input.ReadRune()
+	_ = l.input.UnreadRune()
+	return r
 }
