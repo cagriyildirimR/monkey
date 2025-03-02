@@ -1,7 +1,8 @@
-// Package token is used to define the token type and token struct that will be used in the lexer.
+// Package token is used to define the token type and
+// token struct that will be used in the lexer.
 package token
 
-// Type is the type of data in source code
+// Type represents types in our language
 type Type string
 
 type Token struct {
@@ -10,40 +11,33 @@ type Token struct {
 }
 
 const (
-	ILLEGAL = "ILLEGAL"
-	EOF     = "EOF"
-
-	IDENT = "IDENT"
-	INT   = "INT"
-
-	ASSIGN   = "="
-	PLUS     = "+"
-	MINUS    = "-"
-	BANG     = "!"
-	ASTERISK = "*"
-	SLASH    = "/"
-
-	EQ     = "=="
-	NOT_EQ = "!="
-
-	COMMA     = ","
-	SEMICOLON = ";"
-
-	LT = "<"
-	GT = ">"
-
-	LPAREN = "("
-	RPAREN = ")"
-	LBRACE = "{"
-	RBRACE = "}"
-
-	FUNCTION = "FUNCTION"
-	LET      = "LET"
-	TRUE     = "TRUE"
-	FALSE    = "FALSE"
-	IF       = "IF"
-	ELSE     = "ELSE"
-	RETURN   = "RETURN"
+	ILLEGAL   Type = "ILLEGAL"
+	EOF       Type = "EOF"
+	IDENT     Type = "IDENT"
+	INT       Type = "INT"
+	ASSIGN    Type = "="
+	PLUS      Type = "+"
+	MINUS     Type = "-"
+	BANG      Type = "!"
+	ASTERISK  Type = "*"
+	SLASH     Type = "/"
+	EQ        Type = "=="
+	NOT_EQ    Type = "!="
+	COMMA     Type = ","
+	SEMICOLON Type = ";"
+	LT        Type = "<"
+	GT        Type = ">"
+	LPAREN    Type = "("
+	RPAREN    Type = ")"
+	LBRACE    Type = "{"
+	RBRACE    Type = "}"
+	FUNCTION  Type = "FUNCTION"
+	LET       Type = "LET"
+	TRUE      Type = "TRUE"
+	FALSE     Type = "FALSE"
+	IF        Type = "IF"
+	ELSE      Type = "ELSE"
+	RETURN    Type = "RETURN"
 )
 
 var keywords = map[string]Type{
