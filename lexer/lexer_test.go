@@ -6,12 +6,6 @@ import (
 )
 
 func TestNextToken(t *testing.T) {
-	//input := "=+"
-	//
-	//tests := []token.Token{
-	//	{token.ASSIGN, "="},
-	//	{token.PLUS, "+"},
-	//}
 
 	tests := []struct {
 		input string
@@ -187,5 +181,4 @@ func TestNextToken(t *testing.T) {
 			}
 		}
 	}
-
 }
