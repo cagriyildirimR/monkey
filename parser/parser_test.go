@@ -26,21 +26,22 @@ let foobar = 42;
 
 	tests := []struct {
 		expectedIdentifier string
+		expectedExpression string
 	}{
-		{"x"},
-		{"y"},
-		{"foobar"},
+		{"x", "5"},
+		{"y", "10"},
+		{"foobar", "42"},
 	}
 
 	for i, test := range tests {
 		stmt := program.Statements[i]
-		if !testLetStatement(t, stmt, test.expectedIdentifier) {
+		if !testLetStatement(t, stmt, test.expectedIdentifier, test.expectedExpression) {
 			return
 		}
 	}
 }
 
-func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
+func testLetStatement(t *testing.T, s ast.Statement, name string, expression string) bool {
 	if s.TokenLiteral() != "let" {
 		t.Errorf("s.TokenLiteral not 'let'. got=%q", s.TokenLiteral())
 		return false
@@ -63,6 +64,12 @@ func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
 	if letStmt.Name.TokenLiteral() != name {
 		t.Errorf("letStmt.Name.TokenLiteral() not '%s'. got=%s",
 			name, letStmt.Name.TokenLiteral())
+		return false
+	}
+
+	if letStmt.Value.TokenLiteral() != expression {
+		t.Errorf("letStmt.Value.TokenLiteral() not '%s'. got=%s",
+			expression, letStmt.Value.TokenLiteral())
 		return false
 	}
 
