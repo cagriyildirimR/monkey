@@ -1,2 +1,2 @@
-# ape
+# monkey
 interpreter in go
