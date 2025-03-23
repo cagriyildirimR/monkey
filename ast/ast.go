@@ -94,3 +94,18 @@ func NewIntExpression(token token.Token) *IntExpression {
 		Value: token.Literal,
 	}
 }
+
+type ReturnStatement struct {
+	Token token.Token
+	Value Expression
+}
+
+func (r *ReturnStatement) statementNode()       {}
+func (r *ReturnStatement) TokenLiteral() string { return r.Token.Literal }
+
+func NewReturnStatement(token token.Token, expression Expression) *ReturnStatement {
+	return &ReturnStatement{
+		Token: token,
+		Value: expression,
+	}
+}
